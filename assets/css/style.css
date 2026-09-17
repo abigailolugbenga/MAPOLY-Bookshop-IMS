@@ -1,0 +1,8 @@
+/* Custom overrides on top of Bootstrap */
+.low-stock {
+    background-color: #fadbd8 !important;
+}
+.card-alert {
+    border-color: #b7950b;
+    background-color: #fcf3cf;
+}
