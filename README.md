@@ -1,66 +1,90 @@
-# MAPOLY Bookshop IMS — Starter Code
+# MAPOLY Bookshop Inventory Management System
 
-This is working scaffolding for Sprints 1–3 of your project (login,
-book management, sale/restock transactions, low-stock alerts). It is
-not the finished system — it's a correct, running foundation for you
-to build the rest on top of (categories/suppliers CRUD, reporting
-module, styling, etc.).
+A web-based Inventory Management System built for the MAPOLY Bookshop as a
+final year ND project (Computer Science, Moshood Abiola Polytechnic,
+Abeokuta). Built with PHP, MySQL, and Bootstrap.
 
-## 1. Install the files
-Copy the whole `mapoly_bookshop` folder into your XAMPP `htdocs`:
-- Windows: `C:\xampp\htdocs\mapoly_bookshop\`
-- Mac: `/Applications/XAMPP/htdocs/mapoly_bookshop/`
+## Features
 
-## 2. Create the database
-1. Start Apache and MySQL in the XAMPP Control Panel.
-2. Go to `http://localhost/phpmyadmin`.
-3. Click **Import**, choose `schema.sql` from this folder, click **Go**.
-   This creates the `mapoly_bookshop_db` database, all five tables, and
-   a few sample books so you have something to test with.
+- **Authentication & role-based access control** — Admin and Store Officer
+  roles, enforced server-side (not just hidden buttons). Passwords are
+  hashed with bcrypt.
+- **Book management** — add, edit, delete books, with category/supplier
+  assignment and stock tracking.
+- **Category management** — add, edit, delete categories, with input
+  validation (letters only, no stray symbols/numbers).
+- **Supplier management** — add, edit, delete suppliers, with name, contact
+  person, phone number, and address, plus validation on each field.
+- **Sales recording** — Store Officers record sales; stock is deducted
+  inside a database transaction with row-level locking, so two
+  simultaneous sales on the same book can never push stock negative.
+  Selling more than available stock is blocked with an error.
+- **Restock (purchase) recording** — Admins record stock received from
+  suppliers; stock is added back accordingly.
+- **Automated low-stock alerts** — any book at or below its reorder level
+  is automatically flagged on the Admin Dashboard, with a direct link to
+  restock it.
+- **Sales & Purchase Report** — date-range and type-filtered report with
+  transaction totals, built for management to review activity over any
+  period.
 
-## 3. Create your first login
-1. In your browser, go to `http://localhost/mapoly_bookshop/seed_admin.php`.
-2. It will create an admin account: **username `admin1`, password `ChangeMe123!`**.
-3. **Delete `seed_admin.php` immediately after** — never leave a script
-   like this sitting on a real server.
-4. To add a Store Officer account later, either write a similar
-   one-off script or build an "Add User" admin page the same way
-   `add_book.php` works.
+## Tech Stack
 
-## 4. Log in
-Go to `http://localhost/mapoly_bookshop/auth/login.php` and log in with
-the admin account above. You'll land on the admin dashboard, which
-shows the stock table and any low-stock alerts.
+- PHP 8 (PDO with prepared statements throughout — no raw string-built SQL)
+- MySQL / MariaDB
+- Bootstrap 5 (via CDN)
+- Apache (XAMPP)
 
-## 5. What's included and where to go next
+## Project Structure
 
-| File | What it does | Sprint |
-|---|---|---|
-| `includes/db.php` | Shared PDO database connection | — |
-| `includes/auth.php` | `require_login()` / `require_role()` helpers | 1 |
-| `auth/login.php`, `auth/logout.php` | Login (Algorithm 0) and logout | 1 |
-| `dashboard/admin_dashboard.php` | Stock table + low-stock alerts (Algorithm 3) | 1/3 |
-| `dashboard/officer_dashboard.php` | Simple officer landing page | 1 |
-| `books/add_book.php` | Add-book form (CRUD create example) | 2 |
-| `transactions/record_sale.php` | Sale recording with row-lock + DB transaction (Algorithm 1) | 3 |
-| `transactions/record_purchase.php` | Restock recording (Algorithm 2) | 3 |
+```
+mapoly_bookshop/
+├── auth/              Login, logout
+├── books/             Add / edit books
+├── categories/         Add / edit / list categories
+├── suppliers/          Add / edit / list suppliers
+├── transactions/       Record sale, record purchase
+├── dashboard/          Admin dashboard, Officer dashboard
+├── reports/            Sales & purchase report
+├── includes/           Shared DB connection, auth helpers, header/footer
+├── assets/css/         Custom styling
+└── schema.sql          Full database schema
+```
 
-Still to build, following the same patterns as `add_book.php`:
-- **Sprint 2**: edit/delete books, and CRUD for categories and suppliers
-- **Sprint 4**: the date-filtered sales/purchase report (query
-  `tbl_transaction` with a `WHERE transaction_date BETWEEN ? AND ?`,
-  join to `tbl_book` and `tbl_user` for names)
-- User management page (admin creates officer accounts through the UI
-  instead of `seed_admin.php`)
+## Setup
 
-## 6. Notes on the choices made here
-- **PDO with prepared statements** everywhere — never string-concatenate
-  user input into SQL.
-- **`password_hash()` / `password_verify()`** (bcrypt) for all passwords.
-- **`FOR UPDATE` row locking + a real `beginTransaction()/commit()`**
-  in the sale/purchase scripts — this is what satisfies NFR5
-  (no negative stock from two simultaneous sales).
-- **`require_role()`** at the top of every protected page — this is
-  what satisfies NFR2 (role-based access enforced server-side, not
-  just hidden in the UI).
-- Bootstrap is loaded from a CDN, so there's nothing to install for it.
+1. Copy the `mapoly_bookshop` folder into your XAMPP `htdocs` directory:
+   - Windows: `C:\xampp\htdocs\mapoly_bookshop\`
+   - Mac: `/Applications/XAMPP/htdocs/mapoly_bookshop/`
+2. Start **Apache** and **MySQL** in the XAMPP Control Panel.
+3. Go to `http://localhost/phpmyadmin`, click **Import**, choose
+   `schema.sql` from this folder, and click **Go**. This creates the
+   `mapoly_bookshop_db` database and all five tables, with a few sample
+   books to test with.
+4. Create your first admin account: write a short one-time PHP script that
+   inserts a row into `tbl_user` using `password_hash()` for the password
+   (never insert a plain-text password directly via SQL). Run it once in
+   the browser, then **delete the script immediately** — do not leave
+   account-creation scripts on the server, and never commit one to version
+   control.
+5. Log in at `http://localhost/mapoly_bookshop/auth/login.php`.
+
+## Security Notes
+
+- All database queries use PDO prepared statements to prevent SQL
+  injection.
+- Passwords are stored as bcrypt hashes, never in plain text.
+- Every restricted page checks the logged-in user's role server-side via
+  `require_role()` in `includes/auth.php` — typing a restricted URL
+  directly, without the matching role, returns "Access denied" rather than
+  the page content.
+- Sale transactions use a database transaction with row locking
+  (`SELECT ... FOR UPDATE`) to prevent race conditions from concurrent
+  sales.
+
+## Still to Build
+
+- Edit/delete for suppliers' linked books in bulk
+- Export reports to PDF/CSV
+- Password reset flow for users who forget their password
+-
