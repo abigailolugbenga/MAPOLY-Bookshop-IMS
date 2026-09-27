@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/auth.php';
-require_role('admin');
+require_any_role(['admin', 'officer']);
 
 $id = (int)($_GET['id'] ?? 0);
 $error = '';

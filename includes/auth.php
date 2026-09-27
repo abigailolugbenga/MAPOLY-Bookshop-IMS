@@ -26,3 +26,13 @@ function require_role(string $role): void
         die('Access denied: this page is restricted to ' . htmlspecialchars($role) . ' accounts.');
     }
 }
+
+/** Stop the page unless the logged-in user has one of the given roles. */
+function require_any_role(array $roles): void
+{
+    require_login();
+    if (!in_array($_SESSION['role'], $roles, true)) {
+        http_response_code(403);
+        die('Access denied: this page is restricted to ' . htmlspecialchars(implode(' or ', $roles)) . ' accounts.');
+    }
+}

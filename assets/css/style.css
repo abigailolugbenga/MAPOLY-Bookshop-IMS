@@ -1,8 +1,87 @@
-/* Custom overrides on top of Bootstrap */
+/* =====================================================================
+   MAPOLY Bookshop IMS — custom theme
+   A teal & gold palette layered on top of Bootstrap 5, chosen to feel
+   warmer and more distinctive than the default Bootstrap blue while
+   keeping semantic colours (green = success, red = danger, amber =
+   warning) untouched, since those meanings are relied on throughout
+   the low-stock and status badges.
+   ===================================================================== */
+
+:root {
+  --brand-teal:        #0F766E;
+  --brand-teal-dark:   #0B4F4A;
+  --brand-teal-light:  #E6F4F2;
+  --brand-gold:        #D97706;
+  --brand-gold-light:  #FDF0DE;
+}
+
+body {
+  background-color: #F4F9F8;
+}
+
+/* ---- Navbar: gradient instead of flat Bootstrap dark ---- */
+.app-navbar {
+  background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%) !important;
+  box-shadow: 0 2px 8px rgba(11, 79, 74, 0.25);
+}
+.app-navbar .navbar-brand {
+  letter-spacing: 0.02em;
+}
+.app-navbar .btn-outline-light:hover {
+  background-color: var(--brand-gold);
+  border-color: var(--brand-gold);
+  color: #fff;
+}
+
+/* ---- Primary buttons / links re-themed to teal ---- */
+.btn-primary {
+  background-color: var(--brand-teal) !important;
+  border-color: var(--brand-teal) !important;
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--brand-teal-dark) !important;
+  border-color: var(--brand-teal-dark) !important;
+}
+.btn-outline-primary {
+  color: var(--brand-teal) !important;
+  border-color: var(--brand-teal) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--brand-teal) !important;
+  border-color: var(--brand-teal) !important;
+}
+a {
+  color: var(--brand-teal);
+}
+a:hover {
+  color: var(--brand-teal-dark);
+}
+
+/* ---- Headings get a subtle brand accent ---- */
+h3, h4, h5 {
+  color: var(--brand-teal-dark);
+}
+
+/* ---- Cards and tables ---- */
+.card, table.table {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.table thead.table-light th,
+.table > :not(caption) > * > th {
+  background-color: var(--brand-teal-light) !important;
+  color: var(--brand-teal-dark);
+}
+
+/* ---- Low-stock alert & row highlight (kept amber/red for meaning) ---- */
 .low-stock {
     background-color: #fadbd8 !important;
 }
 .card-alert {
-    border-color: #b7950b;
-    background-color: #fcf3cf;
+    border-color: var(--brand-gold);
+    background-color: var(--brand-gold-light);
 }
+
+/* ---- Status badges on the Store Officer dashboard ---- */
+.badge.bg-success { background-color: #1E8449 !important; }
+.badge.bg-warning { background-color: var(--brand-gold) !important; }
+.badge.bg-danger  { background-color: #C0392B !important; }

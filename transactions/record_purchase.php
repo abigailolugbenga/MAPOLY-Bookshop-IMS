@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Step 3: add quantity received to current stock
             $newQty = $book['quantity_in_stock'] + $quantity;
-            $pdo->prepare('UPDATE tbl_book SET quantity_in_stock = ? WHERE book_id = ?')
+            $pdo->prepare('UPDATE tbl_book SET quantity_in_stock = ?, last_restocked_at = NOW() WHERE book_id = ?')
                 ->execute([$newQty, $bookId]);
 
             // Step 4: log the purchase transaction

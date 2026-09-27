@@ -14,7 +14,7 @@ $lowStockBooks = $lowStockStmt->fetchAll();
 
 // Full stock summary for the table
 $booksStmt = $pdo->query('
-    SELECT b.book_id, b.title, c.category_name, b.quantity_in_stock, b.reorder_level
+    SELECT b.book_id, b.title, c.category_name, b.quantity_in_stock, b.reorder_level, b.last_restocked_at
     FROM tbl_book b
     LEFT JOIN tbl_category c ON b.category_id = c.category_id
     ORDER BY b.title
@@ -66,6 +66,7 @@ require __DIR__ . '/../includes/header.php';
       <th>Category</th>
       <th>Qty in Stock</th>
       <th>Reorder Level</th>
+      <th>Last Restocked</th>
       <th>Status</th>
       <th>Actions</th>
     </tr>
@@ -78,6 +79,7 @@ require __DIR__ . '/../includes/header.php';
         <td><?= htmlspecialchars($b['category_name'] ?? '—') ?></td>
         <td><?= (int)$b['quantity_in_stock'] ?></td>
         <td><?= (int)$b['reorder_level'] ?></td>
+        <td><?= $b['last_restocked_at'] ? date('d M Y, h:i A', strtotime($b['last_restocked_at'])) : '—' ?></td>
         <td><?= $low ? 'LOW' : 'OK' ?></td>
         <td>
           <a href="/mapoly_bookshop/books/edit.php?id=<?= $b['book_id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>

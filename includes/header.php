@@ -9,7 +9,7 @@
 <link href="/mapoly_bookshop/assets/css/style.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar mb-4">
   <div class="container">
     <span class="navbar-brand mb-0 h1">MAPOLY Bookshop IMS</span>
     <?php if (!empty($_SESSION['username'])): ?>
@@ -24,6 +24,8 @@
         <?php else: ?>
           <a href="/mapoly_bookshop/dashboard/officer_dashboard.php" class="btn btn-sm btn-outline-light">Dashboard</a>
           <a href="/mapoly_bookshop/transactions/record_sale.php" class="btn btn-sm btn-outline-light">Record Sale</a>
+          <a href="/mapoly_bookshop/categories/index.php" class="btn btn-sm btn-outline-light">Categories</a>
+          <a href="/mapoly_bookshop/reports/index.php" class="btn btn-sm btn-outline-light">Reports</a>
         <?php endif; ?>
         <span class="text-white ms-2">
           <?= htmlspecialchars($_SESSION['username']) ?> (<?= htmlspecialchars($_SESSION['role']) ?>)

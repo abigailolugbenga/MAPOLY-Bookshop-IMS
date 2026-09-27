@@ -1,7 +1,11 @@
 <?php
 require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/auth.php';
-require_role('admin');
+require_any_role(['admin', 'officer']);
+
+// Quick-preset buttons (Today / This Week) compute their date range at request time
+$today = date('Y-m-d');
+$mondayThisWeek = date('Y-m-d', strtotime('monday this week'));
 
 // Default to "this month so far" if no dates given
 $startDate = $_GET['start_date'] ?? date('Y-m-01');
@@ -56,6 +60,15 @@ require __DIR__ . '/../includes/header.php';
 <h3>Sales &amp; Purchase Report</h3>
 
 <?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+
+<div class="mb-3">
+  <a href="?start_date=<?= $today ?>&end_date=<?= $today ?>&type=<?= htmlspecialchars($type) ?>"
+     class="btn btn-sm <?= ($startDate === $today && $endDate === $today) ? 'btn-primary' : 'btn-outline-primary' ?>">Daily (Today)</a>
+  <a href="?start_date=<?= $mondayThisWeek ?>&end_date=<?= $today ?>&type=<?= htmlspecialchars($type) ?>"
+     class="btn btn-sm <?= ($startDate === $mondayThisWeek && $endDate === $today) ? 'btn-primary' : 'btn-outline-primary' ?>">Weekly (This Week)</a>
+  <a href="?start_date=<?= date('Y-m-01') ?>&end_date=<?= $today ?>&type=<?= htmlspecialchars($type) ?>"
+     class="btn btn-sm btn-outline-primary">Monthly (This Month)</a>
+</div>
 
 <form method="get" class="bg-white p-3 rounded shadow-sm mb-4 row g-2 align-items-end">
   <div class="col-auto">

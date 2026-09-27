@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$books = $pdo->query('SELECT book_id, title, quantity_in_stock FROM tbl_book ORDER BY title')->fetchAll();
+$books = $pdo->query('SELECT book_id, title, quantity_in_stock, reorder_level, unit_price FROM tbl_book ORDER BY title')->fetchAll();
 
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -72,7 +72,7 @@ require __DIR__ . '/../includes/header.php';
     <select name="book_id" class="form-select" required>
       <?php foreach ($books as $b): ?>
         <option value="<?= $b['book_id'] ?>">
-          <?= htmlspecialchars($b['title']) ?> (<?= $b['quantity_in_stock'] ?> in stock)
+          <?= htmlspecialchars($b['title']) ?> (<?= (int)$b['quantity_in_stock'] ?> in stock — ₦<?= number_format($b['unit_price'], 2) ?>)
         </option>
       <?php endforeach; ?>
     </select>
